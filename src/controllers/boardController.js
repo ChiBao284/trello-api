@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import ApiError from '~/utils/ApiError';
 
 const createNew = (req, res, next) => {
     try {
@@ -8,9 +9,12 @@ const createNew = (req, res, next) => {
             message: 'POST from controller: APIs create new board',
         });
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            errors: error.message,
-        });
+        const errorMessage = new Error(error).message;
+        const customMessage = new ApiError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            errorMessage,
+        );
+        next(customMessage);
     }
 };
 
