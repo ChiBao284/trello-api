@@ -1,20 +1,17 @@
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '~/utils/ApiError';
+import { boardService } from '~/services/boardService';
 
-const createNew = (req, res, next) => {
+const createNew = async (req, res, next) => {
     try {
-        // console.log('req.body', req.body);
-        console.log('req.query', req.query);
-        res.status(StatusCodes.OK).json({
-            message: 'POST from controller: APIs create new board',
-        });
+        console.log('req.body', req.body);
+        // console.log('req.query', req.query);
+
+        const createdBoard = await boardService.createNew(req.body);
+
+        res.status(StatusCodes.OK).json(createdBoard);
     } catch (error) {
-        const errorMessage = new Error(error).message;
-        const customMessage = new ApiError(
-            StatusCodes.INTERNAL_SERVER_ERROR,
-            errorMessage,
-        );
-        next(customMessage);
+        next(error);
     }
 };
 
